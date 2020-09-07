@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>
+        Transaction Compare
+    </title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/styles.css"/>
+
+</head>
+<body>
+
+<h1 class="d-flex justify-content-center">Tutuka Technical Interview Project</h1>
+
+<div class="card container mt-md-3 ">
+    <div class="card-header">
+        Select files to compare
+    </div>
+    <form enctype="multipart/form-data" id="csvForm">
+
+        <div class="card-body">
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" for="inputOne">Select File 1</label>
+                <div class="col-sm-10">
+                    <input type="file" name="file_one" class="form-control-file" id="inputOne" accept=".csv" required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" for="inputTwo">Select File 2</label>
+                <div class="col-sm-10">
+                    <input type="file" name="file_two" class="form-control-file" id="inputTwo" accept=".csv" required>
+                </div>
+            </div>
+
+            <button class="btn btn-primary mb-2" type="submit">Compare</button>
+
+        </div>
+
+    </form>
+</div>
+
+<div class="card container mt-md-3" id="comparison_results">
+    <div class="card-header">
+        Comparison Results
+    </div>
+    <div class="card-body">
+
+        <div class="d-flex d-flex justify-content-between">
+
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title" id="results_file_1">FileName.csv</h5>
+                    <div class="d-flex justify-content-start" id="results_total_1">Total Records:</div>
+                    <div class="d-flex justify-content-start" id="results_matching_1">Matching Records:</div>
+                    <div class="d-flex justify-content-start" id="results_duplicate_1">Duplicate Records:</div>
+                    <div class="d-flex justify-content-start" id="results_malformed_1">Malformed Records:</div>
+                    <div class="d-flex justify-content-start" id="results_unmatched_1">Unmatched Records:</div>
+                </div>
+            </div>
+
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title" id="results_file_2">FileName.csv</h5>
+                    <div class="d-flex justify-content-start" id="results_total_2">Total Records:</div>
+                    <div class="d-flex justify-content-start" id="results_matching_2">Matching Records:</div>
+                    <div class="d-flex justify-content-start" id="results_duplicate_2">Duplicate Records:</div>
+                    <div class="d-flex justify-content-start" id="results_malformed_2">Malformed Records:</div>
+                    <div class="d-flex justify-content-start" id="results_unmatched_2">Unmatched Records:</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="d-flex justify-content-center">
+            <button id="showReport" class="btn btn-primary">Unmatched Report</button>
+        </div>
+    </div>
+</div>
+
+<div class="card container mt-md-3" id="unmatched_report">
+    <div class="card-header">
+        Unmatched report
+    </div>
+
+    <div class="table-responsive table-striped table-bordered">
+        <h5 id="report_table_name_1">FileName.csv</h5>
+
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">Transaction ID</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Reference</th>
+                    <th scope="col">Amount</th>
+                </tr>
+                </thead>
+                <tbody id="table_body_1">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="table-responsive table-striped table-bordered">
+        <h5 id="report_table_name_2">FileName.csv</h5>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">Transaction ID</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Reference</th>
+                    <th scope="col">Amount</th>
+                </tr>
+                </thead>
+                <tbody id="table_body_2">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalCenter" tabindex="-1" role="dialog" aria-labelledby="modalCenterTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLongTitle">Similar Records</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="table-responsive table-striped table-bordered">
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th scope="col">Transaction ID</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Reference</th>
+                                <th scope="col">Amount</th>
+                            </tr>
+                            </thead>
+                            <tbody id="table_body_modal">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+<script th:inline="javascript">
+    $(document).ready(function () {
+
+        var compareData;
+
+        $("#csvForm").on("submit", function (event) {
+
+            compareData = null;
+
+            event.preventDefault();
+
+            $.ajax({
+                url: /*[[@{/csv}]]*/ null,
+                type: 'POST',
+                data: new FormData(this),
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    $("#results_file_1").html(data["firstCSVFile"].split('/')[1]);
+                    $("#results_file_2").html(data["secondCSVFile"].split('/')[1]);
+
+                    $("#results_total_1").html("Total Records: " + data["firstCSVFileTotalRecords"]);
+                    $("#results_total_2").html("Total Records: " + data["secondCSVFileTotalRecords"]);
+
+                    $("#results_matching_1").html("Matching Records: " + data["csvfilesMatchedRecords"]);
+                    $("#results_matching_2").html("Matching Records: " + data["csvfilesMatchedRecords"]);
+
+                    $("#results_duplicate_1").html("Duplicate Records: " + data["firstCSVFileTransactionDuplicates"].length);
+                    $("#results_duplicate_2").html("Duplicate Records: " + data["secondCSVFileTransactionDuplicates"].length);
+
+                    $("#results_malformed_1").html("Malformed Records: " + data["firstCSVFileMalformedRecordSet"].length);
+                    $("#results_malformed_2").html("Malformed Records: " + data["secondCSVFileMalformedRecordSet"].length);
+
+                    $("#results_unmatched_1").html("Unmatched Records: " + data["firstCSVFileUnmatchedRecords"]);
+                    $("#results_unmatched_2").html("Unmatched Records: " + data["secondCSVFileUnmatchedRecords"]);
+
+                    $("#report_table_name_1").html(data["firstCSVFile"].split('/')[1]);
+                    $("#report_table_name_2").html(data["secondCSVFile"].split('/')[1]);
+
+                    $("#comparison_results").show(1000);
+
+                    loadTableData(data);
+                    loadTableData(data);
+
+                    compareData = data;
+
+                }
+            });
+        });
+
+
+        $(document).on('click','.modalButton', function () {
+
+            $('#table_body_modal').empty();
+
+            var transactionID = $(this).attr("data-id");
+            var dataStore;
+
+            dataStore = compareData["similaritiesMap"][transactionID];
+
+            if(dataStore.length == 0){
+
+                $("#table_body_modal").append(
+                    "<tr>"
+                    + "<td colspan='4'>No good suggestions</td>"
+                    + "</tr>");
+
+            } else {
+
+                $.each(dataStore, function (i, item) {
+
+                    $("#table_body_modal").append(
+                        "<tr>"
+                        + "<td>" + item["transactionID"] + "</td>"
+                        + "<td>" + item["transactionDate"] + "</td>"
+                        + "<td>" + item["transactionNarrative"] + "</td>"
+                        + "<td>" + item["transactionAmount"] + "</td>"
+                        + "</tr>");
+                })
+            }
+
+            $('#modalCenter').modal({show:true});
+
+
+        });
+
+        $("#showReport").click(function () {
+            $("#unmatched_report").show(1000);
+        });
+
+        function loadTableData(items) {
+            var tableName = "";
+
+            $('tbody').empty();
+
+            $.each(items["unmatchedRecords"], function (i, item) {
+
+                if (item["fileName"] === items["firstCSVFile"]) {
+                    tableName = "#table_body_1";
+                } else if (item["fileName"] === items["secondCSVFile"]) {
+                    tableName = "#table_body_2";
+                }
+
+                $(tableName).append(
+                    "<tr>"
+                    + "<td><button type=\"button\" class=\"btn btn-primary modalButton\"  "
+                    + "data-id=\"" + item["transactionID"] + "\">" + item["transactionID"] + "</button></td>"
+                    + "<td>" + item["transactionDate"] + "</td>"
+                    + "<td>" + item["transactionNarrative"] + "</td>"
+                    + "<td>" + item["transactionAmount"] + "</td>"
+                    + "</tr>");
+            })
+
+        };
+
+
+    });
+</script>
+
+</body>
+</html>
