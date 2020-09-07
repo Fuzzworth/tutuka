@@ -2,8 +2,9 @@
 Tutuka Technical interview
 
 ## Installation
-   + docker run -it -p [host port]:80 fuzzworth/tutuka:0.0.2
-
+```
+docker run -it -p [host port]:80 fuzzworth/tutuka:0.0.2
+```
 ## Live Demo
 URL http://3.133.141.157/ 
 + http://tutuka.nyangasi.info/ (should the DNS have successfully propagated)
